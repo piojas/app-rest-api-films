@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\MoviesController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,8 +21,11 @@ Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
     Route::get('user', [AuthController::class, 'userInfo']);
     Route::post('logout', [AuthController::class, 'logout']);
-
-    Route::apiResource('movies', MoviesController::class);
-
     
+    Route::prefix('movies')->group(function () {
+        Route::apiResource('/', MoviesController::class);
+        Route::get('search/{title}', [MoviesController::class, 'searchByTitle']);
+        Route::post('rating', [MoviesController::class, 'rateMovie']);
+        Route::post('upload', [MoviesController::class, 'uploadCoverImage']);
+    });
 });
